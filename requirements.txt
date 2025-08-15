@@ -1,0 +1,8 @@
+rdkit-pypi==2022.9.5
+neo4j==5.5.0
+transformers==4.30.0
+torch==2.0.1
+scikit-learn==1.2.2
+flask==2.2.3
+chembl-webresource-client==0.10.8
+pysmiles==1.0.1
