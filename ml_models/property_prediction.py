@@ -24,25 +24,34 @@ class PropertyPredictor:
         """Predict property using similar polymers"""
         training_data = self.retrieve_similar(polymer_id)
         
+        if not training_data:
+            return None
+        
         if len(training_data) > 50:
             model = self.models['random_forest']
         else:
             model = self.models['gaussian_process']
         
         X = [self._extract_features(d['neighbor']) for d in training_data]
-        y = [d['nprop'][property_name] for d in training_data]
+        y = [d['nprop'][property_name] for d in training_data if property_name in d['nprop']]
+        
+        if not X or not y:
+            return None
         
         model.fit(X, y)
-        target_features = self._extract_features(
-            self.db.get_polymer(polymer_id)
-        )
+        target_polymer = self.db.get_polymer(polymer_id)
+        
+        if not target_polymer:
+            return None
+        
+        target_features = self._extract_features(target_polymer)
         return model.predict([target_features])[0]
     
     def _extract_features(self, polymer):
         """Convert polymer to feature vector"""
         return [
-            polymer['molecular_weight'],
-            polymer['polar_surface_area'],
-            polymer['logp']
+            polymer.get('molecular_weight', 0),
+            polymer.get('polar_surface_area', 0),
+            polymer.get('logp', 0)
             # Add more features
         ]

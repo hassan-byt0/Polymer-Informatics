@@ -1,12 +1,15 @@
 from rdkit import Chem
 
 def to_psmiles(mol, stereo=True, branches=True):
-    """Convert RDKit molecule to p-SMILES with stereo/branch support"""
-    if stereo:
-        Chem.AssignStereochemistry(mol, cleanIt=True)
+    """
+    Convert RDKit molecule to p-SMILES with stereo/branch support.
+    - Assigns stereochemistry
+    - Returns SMILES with explicit bonds and hydrogens
+    """
+    Chem.AssignStereochemistry(mol, cleanIt=True)
     return Chem.MolToSmiles(
         mol,
-        isomericSmiles=True,
+        isomericSmiles=stereo,
         allBondsExplicit=True,
         allHsExplicit=True
     )

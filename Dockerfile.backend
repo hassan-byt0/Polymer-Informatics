@@ -1,0 +1,18 @@
+# Backend Dockerfile
+FROM python:3.10-slim
+WORKDIR /app
+ENV PYTHONPATH=/app
+RUN apt-get update && apt-get install -y libxrender1 libsm6 libxext6
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && pip install python-dotenv PyPDF2
+COPY .env ./
+COPY data_ingestion/ data_ingestion/
+COPY graph_db/ graph_db/
+COPY ml_models/ ml_models/
+COPY polymer_representation/ polymer_representation/
+COPY search/ search/
+COPY user_interface/ user_interface/
+COPY utils/ utils/
+COPY vdoc.pub_polymers-a-property-database.pdf ./
+EXPOSE 5000
+CMD ["python", "user_interface/app.py"]

@@ -1,9 +1,11 @@
+from rdkit import Chem
+from rdkit.Chem import AllChem
+import torch
 from transformers import AutoModel, AutoTokenizer
 from rdkit import DataStructs
-from rdkit.Chem import AllChem
 
 class HybridSearch:
-    def __init__(self, llm_model="scibert-scivocab-uncased"):
+    def __init__(self, llm_model="bert-base-uncased"):
         self.tokenizer = AutoTokenizer.from_pretrained(llm_model)
         self.model = AutoModel.from_pretrained(llm_model)
     
