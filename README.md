@@ -156,11 +156,6 @@ curl -X POST http://localhost:5050/predict \
   -H "Content-Type: application/json" \
   -d '{"smiles": "CCc1ccccc1", "property": "Tg"}'
 
-# Polymer search
-curl -X POST http://localhost:5050/search \
-  -H "Content-Type: application/json" \
-  -d '{"query": "polystyrene", "limit": 10}'
-
 # Visualization
 curl -X POST http://localhost:5050/visualize \
   -H "Content-Type: application/json" \
