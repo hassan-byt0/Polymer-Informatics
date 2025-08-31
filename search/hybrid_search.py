@@ -11,33 +11,51 @@ class HybridSearch:
     
     def structural_similarity(self, query_psmiles, targets):
         """Calculate structural similarity using fingerprints"""
-        query_fp = AllChem.GetMorganFingerprint(
-            Chem.MolFromSmiles(query_psmiles), 
-            radius=3
-        )
+        query_mol = Chem.MolFromSmiles(query_psmiles)
+        if query_mol is None:
+            # If query molecule is invalid, return zero similarity for all
+            return [(target, 0.0) for target in targets]
+        
+        query_fp = AllChem.GetMorganFingerprint(query_mol, radius=3)
         results = []
         for target in targets:
-            target_fp = AllChem.GetMorganFingerprint(
-                Chem.MolFromSmiles(target['psmiles']), 
-                radius=3
-            )
-            similarity = DataStructs.TanimotoSimilarity(query_fp, target_fp)
-            results.append((target, similarity))
+            try:
+                target_smiles = target.get('psmiles', target.get('smiles', ''))
+                target_mol = Chem.MolFromSmiles(target_smiles)
+                if target_mol is None:
+                    # Skip invalid molecules
+                    results.append((target, 0.0))
+                    continue
+                
+                target_fp = AllChem.GetMorganFingerprint(target_mol, radius=3)
+                similarity = DataStructs.TanimotoSimilarity(query_fp, target_fp)
+                results.append((target, similarity))
+            except Exception as e:
+                # Handle any RDKit errors gracefully
+                results.append((target, 0.0))
         return sorted(results, key=lambda x: x[1], reverse=True)
     
     def semantic_similarity(self, query_text, targets):
         """Calculate semantic similarity using LLM embeddings"""
-        inputs = self.tokenizer(query_text, return_tensors="pt")
-        query_embedding = self.model(**inputs).last_hidden_state.mean(dim=1)
-        
-        results = []
-        for target in targets:
-            target_embedding = self.model(
-                **self.tokenizer(target['description'], return_tensors="pt")
-            ).last_hidden_state.mean(dim=1)
-            similarity = torch.cosine_similarity(query_embedding, target_embedding)
-            results.append((target, similarity.item()))
-        return sorted(results, key=lambda x: x[1], reverse=True)
+        try:
+            inputs = self.tokenizer(query_text, return_tensors="pt", truncation=True, padding=True)
+            query_embedding = self.model(**inputs).last_hidden_state.mean(dim=1)
+            
+            results = []
+            for target in targets:
+                try:
+                    target_text = target.get('description', target.get('name', 'polymer'))
+                    target_inputs = self.tokenizer(target_text, return_tensors="pt", truncation=True, padding=True)
+                    target_embedding = self.model(**target_inputs).last_hidden_state.mean(dim=1)
+                    similarity = torch.cosine_similarity(query_embedding, target_embedding)
+                    results.append((target, similarity.item()))
+                except Exception as e:
+                    # Handle any tokenization/model errors gracefully
+                    results.append((target, 0.0))
+            return sorted(results, key=lambda x: x[1], reverse=True)
+        except Exception as e:
+            # If semantic similarity fails completely, return zero similarity for all
+            return [(target, 0.0) for target in targets]
     
     def hybrid_search(self, query_psmiles, query_text, targets, alpha=0.7):
         """Combine structural and semantic similarity"""

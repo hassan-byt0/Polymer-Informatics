@@ -2,6 +2,7 @@ rdkit-pypi==2022.9.5
 torch==2.0.1
 transformers==4.30.0
 flask==2.2.5
+flask-cors==4.0.0
 werkzeug==2.2.3
 neo4j==5.5.0
 scikit-learn==1.2.2

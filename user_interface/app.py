@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, make_response
+from flask_cors import CORS
 from io import BytesIO
 from rdkit import Chem
 from rdkit.Chem import Draw
@@ -20,9 +21,39 @@ from utils.cheminformatics import compute_descriptors
 from utils.visualization import render_molecule
 
 app = Flask(__name__)
+# Configure CORS to allow requests from the React frontend
+CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'], 
+     methods=['GET', 'POST', 'OPTIONS'],
+     allow_headers=['Content-Type', 'Authorization'])
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add('Access-Control-Allow-Headers', "*")
+        response.headers.add('Access-Control-Allow-Methods', "*")
+        return response
+
 db = Neo4jConnector()
 search_engine = HybridSearch()
 property_predictor = PropertyPredictor(db)
+
+@app.route('/', methods=['GET'])
+def health_check():
+    """Basic health check endpoint."""
+    return jsonify({
+        'status': 'healthy',
+        'message': 'Polymer Informatics API is running',
+        'available_endpoints': [
+            'POST /ingest - Ingest data from sources',
+            'POST /predict - Predict polymer properties',
+            'POST /visualize - Visualize polymer structure',
+            'POST /represent - Convert to different representations',
+            'POST /descriptors - Compute molecular descriptors',
+            'POST /active_learning - Get experiment suggestions'
+        ]
+    })
 
 @app.route('/ingest', methods=['POST'])
 def ingest_data():

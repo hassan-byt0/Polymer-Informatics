@@ -15,13 +15,14 @@ class Neo4jConnector:
         self.driver.close()
     def run(self, query, parameters=None):
         with self.driver.session() as session:
-            return session.run(query, parameters or {})
+            result = session.run(query, parameters or {})
+            return [record.data() for record in result]
     def get_all_polymers(self):
         query = "MATCH (p:Polymer) RETURN p.id AS psmiles, p.name AS name, p.source AS source, p.description AS description"
-        result = self.run(query)
-        return [r.data() for r in result]
+        return self.run(query)
     def get_polymer(self, polymer_id):
         query = "MATCH (p:Polymer {id: $id}) RETURN p"
-        result = self.run(query, {"id": polymer_id})
-        record = result.single()
-        return record["p"] if record else None
+        with self.driver.session() as session:
+            result = session.run(query, {"id": polymer_id})
+            record = result.single()
+            return record["p"] if record else None
