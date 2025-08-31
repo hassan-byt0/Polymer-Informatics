@@ -1,6 +1,6 @@
 # Polymer Informatics Pipeline
 
-![Polymer Informatics Pipeline Overview](https://drive.google.com/file/d/1vViGF0zOfGZxm_XbeVE_AYJpn1bna_Au/view?usp=sharing).
+![Polymer Informatics Pipeline Overview](https://drive.google.com/file/d/1vViGF0zOfGZxm_XbeVE_AYJpn1bna_Au).
 <!-- Replace with your actual image URL or relative path to showcase the system -->
 
 This repository contains a full-stack, Dockerized pipeline for advanced polymer informatics, including data extraction from scientific PDFs, property prediction, molecular visualization, and a modern web interface.
