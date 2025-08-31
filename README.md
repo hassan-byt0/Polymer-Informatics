@@ -149,36 +149,6 @@ The system can predict various polymer properties from molecular structures. Her
 }
 ```
 
-#### Example 4: Polymer Search and Similarity
-**Input:**
-```json
-{
-  "query": "Find polymers similar to polycarbonate with Tg > 120°C"
-}
-```
-
-**Output:**
-```json
-{
-  "results": [
-    {
-      "name": "Polycarbonate",
-      "smiles": "CC(C)(c1ccc(O)cc1)",
-      "Tg": 150.0,
-      "similarity": 1.0,
-      "source": "literature"
-    },
-    {
-      "name": "Polyetherimide",
-      "Tg": 217.0,
-      "similarity": 0.82,
-      "applications": ["High-temperature applications"]
-    }
-  ],
-  "total_matches": 15
-}
-```
-
 ### API Endpoints Overview
 ```bash
 # Property prediction
