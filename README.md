@@ -1,6 +1,6 @@
 # Polymer Informatics Pipeline
 
-![Polymer Informatics Pipeline Overview](https://your-image-url-here.com/pipeline-overview.png)
+![Polymer Informatics Pipeline Overview](https://drive.google.com/file/d/1vViGF0zOfGZxm_XbeVE_AYJpn1bna_Au/view?usp=sharing).
 <!-- Replace with your actual image URL or relative path to showcase the system -->
 
 This repository contains a full-stack, Dockerized pipeline for advanced polymer informatics, including data extraction from scientific PDFs, property prediction, molecular visualization, and a modern web interface.
@@ -239,7 +239,7 @@ A comprehensive accuracy assessment has been completed (see `testing/ACCURACY_AS
 
 ## System Status & Validation
 
-### Recent Updates (September 2025)
+### Recent Updates (August 30, 2025)
 ✅ **Comprehensive Testing Framework Implemented**
 - Curated test dataset with 10 literature-verified polymers
 - Validation metrics: MAE, RMSE, R², tolerance analysis  
