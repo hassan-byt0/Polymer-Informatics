@@ -124,5 +124,3 @@ python testing/validation/data_quality_check.py
 ❌ **Training Data**: Poor quality, needs replacement
 🔧 **Next Step**: Data cleaning will unlock the system's full potential
 
-Estimated time to achieve good accuracy: 2-3 days of data curation
-Expected final performance: MAE < 25°C for Tg predictions
